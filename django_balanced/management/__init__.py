@@ -19,16 +19,16 @@ def sync_balanced(app, created_models, verbosity, db, **kwargs):
     Credit.sync()
 
 signals.post_syncdb.connect(
-    sync_balanced, 
-    sender=models, 
+    sync_balanced,
+    sender=models,
     dispatch_uid="django_balanced.management.sync_balanced"
 )
 # the pre_syncdb signal is supported in a later version
 # only connect to it when it exists
 if hasattr(signals, 'pre_syncdb'):
     signals.pre_syncdb.connect(
-        configure_balanced, 
-        sender=models, 
+        configure_balanced,
+        sender=models,
         dispatch_uid="django_balanced.management.pre_syncdb"
     )
 else:
