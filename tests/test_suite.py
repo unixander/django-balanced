@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 
 import balanced
-import mock
 
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -26,24 +25,19 @@ FIXTURES = {
 
 
 class ModelsTest(TestCase):
-
     @classmethod
     def setUpClass(cls):
-        with balanced.key_switcher(None):
-            cls.api_key = balanced.APIKey().save()
-        balanced.configure(cls.api_key.secret)
         cls.marketplace = balanced.Marketplace().save()
-        cls.user = User.objects.create_user('john', 'john@test.com', 'pass')
-        cls.user.save()
-
-        card = balanced.Card(**FIXTURES['card']).save()
-        cls.card = models.Card.create_from_card_uri(cls.user, card.uri)
-        cls.buyer = cls.card.user.balanced_account
-        # put some money in the escrow account
-        cls.buyer.debit(100 * 100, 'test')  # $100.00
 
     def setUp(self):
-        pass
+        self.user = User.objects.create_user('john', 'john@test.com', 'pass')
+        self.user.save()
+
+        card = balanced.Card(**FIXTURES['card']).save()
+        self.card = models.Card.create_from_card_uri(self.user, card.uri)
+        self.buyer = self.card.user.balanced_account
+        # put some money in the escrow account
+        self.buyer.debit(100 * 100, 'test')  # $100.00
 
     def test_create_credit(self):
         bank_account = models.BankAccount(**FIXTURES['bank_account'])
