@@ -1,0 +1,20 @@
+language: python
+
+python:
+  - "2.7"
+
+env:
+  - DJANGO=1.7
+  - DJANGO=1.6
+  - DJANGO=1.5
+
+install:
+  - pip install -q -r requirements.txt
+  - pip install -q -r test-requirements.txt
+  - pip install -q -I "django<$DJANGO"
+  - pip install python-coveralls
+  - python setup.py -q install
+
+script: py.test tests/ --cov django_balanced --cov-config .coveragerc --cov-report term-missing --pep8 django_balanced
+
+after_success: coveralls
