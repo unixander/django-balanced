@@ -9,6 +9,11 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.db.models.signals import post_save
 
+from .settings import BALANCED
+
+if BALANCED.get('API_KEY'):
+    balanced.configure(BALANCED['API_KEY'])
+
 
 class BalancedException(Exception):
     pass
