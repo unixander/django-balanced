@@ -1,32 +1,68 @@
 {% extends "admin/base_site.html" %}
+{% load static %}
+{% load url from future %}
+
+{% block title %}Bank Account Bulk Payout {{ block.super }}{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
+    <style type="text/css">
+        #payout-forms { width: 100%; }
+    </style>
+{% endblock %}
 
 {% block content %}
-
-<form action="{% url admin:bank_account_bulk_pay %}" method="post">
-    {% csrf_token %}
+<div id="content-main">
+    <h1>Bank Account Bulk Payout</h1>
     <p>How much do you want to pay to the following bank accounts:</p>
-    <table>
-        <thead>
-            <tr>
-                <td>Bank account</td>
-                <td>Amount</td>
-                <td>Description</td>
-            </tr>
-        </thead>
-        <tbody>
-        {% for index, bank_account in bank_accounts %}
-        <input type="hidden" name="bank_account_{{ index }}" value="{{ bank_account.uri }}">
-        <tr>
-            <td>{{ bank_account }}</td>
-            <td><input type="number" name="bank_account_{{ index }}_amount"
-                       value="" step="any" min="0.5"></td>
-            <td><input type="text" name="bank_account_{{ index }}_description"></td>
-        </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <button>Pay bank accounts</button>
-
-</form>
-
+        <form action="{% url 'admin:bank_account_bulk_pay' %}" method="post">
+            <div class="module" id="changelist">
+                {{ formset.non_form_errors }}
+                {% csrf_token %}
+                <table id="payout-forms">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Bank account</th>
+                            <th>Amount</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for form in formset %}
+                        {{ form.bank_account }}
+                        <tr>
+                            <td>
+                                {% if form.initial.bank_account.user %}
+                                    <p>{{ form.initial.bank_account.user }}</p>
+                                {% else %}
+                                    <p class="help">N/A</p>
+                                {% endif %}
+                            </td>
+                            <td>{{ form.initial.bank_account.name }}<br />{{ form.initial.bank_account.account_number }}</td>
+                            <td>
+                                {{ form.amount.errors }}
+                                {{ form.amount }}
+                                <p class="help">{{ form.amount.help_text }}</p>
+                            </td>
+                            <td>
+                                {{ form.description.errors }}
+                                {{ form.description }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="submit-row">
+                <p class="deletelink-box">
+                    <input type="submit" name="_cancel" value="Cancel Payouts" />
+                </p>
+                {{ formset.management_form }}
+                <input type="hidden" name="FORM-COUNT" value="{{ formset|length }}" />
+                <input type="submit" name="_payout" value="Pay bank accounts" class="default" />
+            </div>
+        </form>
+</div>
 {% endblock %}

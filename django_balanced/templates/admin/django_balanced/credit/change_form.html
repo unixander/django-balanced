@@ -1,0 +1,13 @@
+{% extends "admin/change_form.html" %}
+
+{% block content %}
+    {% if add %}
+        {{ block.super }}
+    {% else %}
+        {# You cannot make changes to Credit objects #}
+        <div id="content-main">
+            <p class="errornote">Credits cannot be changed once created.</p>
+            <p><a href="../">Go back to the Credit listing.</a></p>
+        </div>
+    {% endif %}
+{% endblock %}
