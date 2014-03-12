@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
 
 import balanced
+
 from django import forms
 from django.conf.urls import patterns, url
 from django.contrib import admin
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core import urlresolvers
 from django.shortcuts import render, redirect
 
@@ -38,7 +39,8 @@ class BankAccountAdminForm(forms.ModelForm):
     type = forms.ChoiceField(choices=(
         ('savings', 'savings'), ('checking', 'checking')
     ))
-    user = forms.ModelChoiceField(queryset=User.objects, required=False)
+    user = forms.ModelChoiceField(queryset=get_user_model().objects,
+        required=False)
 
     class Meta:
         model = BankAccount
@@ -118,7 +120,7 @@ class BankAccountAdmin(BalancedAdmin):
         obj.routing_number = data['routing_number']
         obj.type = data['type']
         if data['user']:
-            obj.user = User.objects.get(pk=data['user'])
+            obj.user = get_user_model().objects.get(pk=data['user'])
         super(BalancedAdmin, self).save_model(request, obj, form, change)
 
 
