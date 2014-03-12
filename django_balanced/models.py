@@ -259,7 +259,8 @@ class Debit(BalancedResource):
 class Account(BalancedResource):
     _resource = balanced.Account
 
-    user = models.OneToOneField(AUTH_USER_MODEL, related_name='balanced_account')
+    user = models.OneToOneField(AUTH_USER_MODEL,
+        related_name='balanced_account')
 
     class Meta:
         db_table = 'balanced_accounts'
