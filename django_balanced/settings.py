@@ -8,7 +8,7 @@ LOGGER = logging.getLogger(__name__)
 
 BALANCED = {
     'DASHBOARD_URL': os.environ.get('BALANCED_DASHBOARD_URL',
-        'https://www.balancedpayments.com'),
+        'https://dashboard.balancedpayments.com'),
     'API_URL': os.environ.get('BALANCED_API_URL',
         'https://api.balancedpayments.com'),
     'API_KEY': os.environ.get('BALANCED_API_KEY'),

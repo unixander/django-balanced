@@ -9,7 +9,7 @@ def balanced_settings(request):
         'BALANCED': {
             'MARKETPLACE_URI': balanced.Marketplace.my_marketplace.uri,
             'DASHBOARD_URL': settings.BALANCED['DASHBOARD_URL'],
-            'API_URL': settings.BALANCED['DASHBOARD_URL'],
+            'API_URL': settings.BALANCED['API_URL'],
         },
     }
 
