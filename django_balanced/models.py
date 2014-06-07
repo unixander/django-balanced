@@ -6,13 +6,6 @@ import balanced
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.db.models.signals import post_save
-
-try:
-    from django.contrib.auth import get_user_model
-except ImportError:
-    from django.contrib.auth.models import User
-    get_user_model = lambda: User
 
 from .settings import BALANCED
 
@@ -296,11 +289,3 @@ class Account(BalancedResource):
 
     def delete(self, using=None):
         raise NotImplemented
-
-
-# this will create an account per user when they are next saved. subsequent
-# saves will not make a network call.
-def create_user_profile(sender, instance, created, **kwargs):
-    Account.objects.get_or_create(user=instance)
-
-post_save.connect(create_user_profile, sender=get_user_model())
