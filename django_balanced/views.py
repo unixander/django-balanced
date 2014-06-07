@@ -2,17 +2,12 @@ from __future__ import unicode_literals
 
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views import generic
 
 from .formsets import BulkPayoutFormSet
 from .models import BankAccount
-
-
-def bank_accounts(request):
-    data = {}
-    return render(request, 'django_balanced/bank_account_form.html', **data)
 
 
 class AdminBulkPay(generic.TemplateView):
