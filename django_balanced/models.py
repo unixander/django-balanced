@@ -69,7 +69,7 @@ class BankAccount(BalancedResource):
     type = models.CharField(editable=False, max_length=255)
 
     class Meta:
-#        app_label = 'Balanced'
+        # app_label = 'Balanced'
         db_table = 'balanced_bank_accounts'
 
     def __unicode__(self):
@@ -127,7 +127,7 @@ class Card(BalancedResource):
     brand = models.CharField(editable=False, max_length=255)
 
     class Meta:
-    #        app_label = 'Balanced'
+        # app_label = 'Balanced'
         db_table = 'balanced_cards'
 
     @classmethod
@@ -180,7 +180,7 @@ class Credit(BalancedResource):
     status = models.CharField(editable=False, max_length=255)
 
     class Meta:
-#        app_label = 'Balanced'
+        # app_label = 'Balanced'
         db_table = 'balanced_credits'
 
     def save(self, **kwargs):
@@ -225,7 +225,7 @@ class Debit(BalancedResource):
                              editable=False)
 
     class Meta:
-    #        app_label = 'Balanced'
+        # app_label = 'Balanced'
         db_table = 'balanced_debits'
 
     def save(self, **kwargs):
