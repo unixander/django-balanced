@@ -42,3 +42,4 @@ nosetests.xml
 coverage.xml
 stats.dat
 .DS_Store
+.tox/
