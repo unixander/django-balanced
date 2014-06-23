@@ -16,6 +16,6 @@ install:
   - pip install python-coveralls
   - python setup.py -q install
 
-script: py.test tests/ --cov django_balanced --cov-config .coveragerc --cov-report term-missing --pep8 django_balanced
+script: ./run-tests.sh
 
 after_success: coveralls
