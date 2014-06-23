@@ -25,7 +25,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 # Sync with Balanced when the database is synced
 @receiver(post_sync, dispatch_uid='django_balanced.listeners.sync_balanced')
-def sync_balanced(app, created_models, verbosity, db, **kwargs):
+def sync_balanced(sender, **kwargs):
     from .models import BankAccount, Credit
     BankAccount.sync()
     Credit.sync()

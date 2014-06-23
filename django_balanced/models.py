@@ -9,6 +9,13 @@ from django.db import models
 
 from .settings import BALANCED
 
+try:
+    from django import apps
+except ImportError:
+    # We're in Django <1.7 and can't rely on the apps registry.
+    # Fall back to importing listeners here.
+    from . import listeners
+
 if BALANCED.get('API_KEY'):
     balanced.configure(BALANCED['API_KEY'])
 
