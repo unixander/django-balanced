@@ -10,7 +10,6 @@ class BaseBulkPayoutFormSet(BaseFormSet):
     def clean(self):
         if any(self.errors):
             return
-        balanced.bust_cache()
         escrow = balanced.Marketplace.my_marketplace.in_escrow
         total = sum([form.cleaned_data['amount'] for form in self.forms]) * 100
         if total > escrow:
