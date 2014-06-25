@@ -1,8 +1,8 @@
 django-balanced
 ===============
 
-[![Build Status](https://secure.travis-ci.org/balanced/django-balanced.png)](http://travis-ci.org/dmpayton/django-balanced)
-[![Coverage Status](https://coveralls.io/repos/balanced/django-balanced/badge.png?branch=develop)](https://coveralls.io/r/balanced/django-balanced)
+[![Build Status](https://secure.travis-ci.org/balanced/django-balanced.png)](http://travis-ci.org/balanced/django-balanced)
+[![Coverage Status](https://coveralls.io/repos/balanced/django-balanced/badge.png)](https://coveralls.io/r/balanced/django-balanced)
 [![Downloads](https://pypip.in/d/django-balanced/badge.png)](https://pypi.python.org/pypi/django-balanced)
 
 Django integration for [Balanced Payments](https://www.balancedpayments.com/).
