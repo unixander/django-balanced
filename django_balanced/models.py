@@ -4,7 +4,7 @@ from datetime import datetime
 import balanced
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.db import models
 
 from .settings import BALANCED
@@ -120,6 +120,14 @@ class BankAccount(BalancedResource):
 
         return django_credit
 
+    def debit(self, amount, description):
+        account = self.user.balanced_account
+        return account.debit(
+            amount=amount,
+            description=description,
+            bank_account=self,
+        )
+
 
 class Card(BalancedResource):
     _resource = balanced.Card
@@ -229,23 +237,43 @@ class Debit(BalancedResource):
     description = models.CharField(editable=False, max_length=255)
     card = models.ForeignKey(Card,
                              related_name='debits',
-                             editable=False)
+                             editable=False,
+                             blank=True,
+                             null=True)
+    bank_account = models.ForeignKey(BankAccount,
+                                     related_name='debits',
+                                     editable=False,
+                                     blank=True,
+                                     null=True)
 
     class Meta:
         # app_label = 'Balanced'
         db_table = 'balanced_debits'
 
+    def clean(self):
+        if not self.card or self.bank_account:
+            raise ValidationError(
+                _('Must have either "card" or "bank_account"'),
+                code='invalid',)
+        if self.card and self.bank_account:
+            raise ValidationError(
+                _('Cannot include both "card" and "bank_account"'),
+                code='invalid',)
+        return super(Debit, self).clean()
+
     def save(self, **kwargs):
         if not self.uri:
             account = self.user.balanced_account.find()
-            try:
-                self.card
-            except ObjectDoesNotExist:
-                self.card = self.user.cards.all()[0]
+            if self.card:
+                source_uri = self.card.uri
+            elif self.bank_account:
+                source_uri = self.bank_account.uri
+            else:
+                source_uri = self.user.cards.all()[0].uri
             debit = account.debit(
                 amount=self.amount,
                 description=self.description,
-                source_uri=self.card.uri,
+                source_uri=source_uri,
             )
             try:
                 debit.save()
@@ -283,7 +311,7 @@ class Account(BalancedResource):
 
         super(Account, self).save(**kwargs)
 
-    def debit(self, amount, description, card=None):
+    def debit(self, amount, description, card=None, bank_account=None):
         debit = Debit(
             amount=amount,
             description=description,
@@ -291,6 +319,8 @@ class Account(BalancedResource):
         )
         if card:
             debit.card = card
+        elif bank_account:
+            debit.bank_account = bank_account
         debit.save()
         return debit
 
