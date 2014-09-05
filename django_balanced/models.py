@@ -324,5 +324,16 @@ class Account(BalancedResource):
         debit.save()
         return debit
 
+    def credit(self, amount, description, bank_account):
+        credit = Credit(
+            amount=amount,
+            description=description,
+            user=self.user,
+            bank_account=bank_account,
+            status='s' # scheduled
+        )
+        credit.save()
+        return credit
+
     def delete(self, using=None):
         raise NotImplemented
