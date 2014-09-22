@@ -285,6 +285,14 @@ class Debit(BalancedResource):
         self._sync(debit)
         super(Debit, self).save(**kwargs)
 
+    def refund(self, amount, description, meta={}):
+        debit = self._resource.find(self.uri)
+        return debit.refund(
+            amount=amount,
+            description=description,
+            meta=meta
+        )
+
     def delete(self, using=None):
         raise NotImplemented
 
