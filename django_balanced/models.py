@@ -107,9 +107,9 @@ class BankAccount(BalancedResource):
         bank_account.delete()
         super(BankAccount, self).delete(using)
 
-    def credit(self, amount, description=None):
+    def credit(self, amount, description=None, statement_descriptor=None):
         bank_account = self.find()
-        credit = bank_account.credit(amount, description)
+        credit = bank_account.credit(amount, description, statement_descriptor)
 
         django_credit = Credit()
         django_credit._sync(credit)
@@ -120,11 +120,12 @@ class BankAccount(BalancedResource):
 
         return django_credit
 
-    def debit(self, amount, description):
+    def debit(self, amount, description, statement_descriptor=None):
         account = self.user.balanced_account
         return account.debit(
             amount=amount,
             description=description,
+            appears_on_statement_as=statement_descriptor,
             bank_account=self,
         )
 
@@ -169,11 +170,12 @@ class Card(BalancedResource):
         card.save()
         super(Card, self).delete(using)
 
-    def debit(self, amount, description):
+    def debit(self, amount, description, statement_descriptor=None):
         account = self.user.balanced_account
         return account.debit(
             amount=amount,
             description=description,
+            appears_on_statement_as=statement_descriptor,
             card=self,
         )
 
@@ -192,6 +194,7 @@ class Credit(BalancedResource):
                                  decimal_places=2,
                                  max_digits=10)
     description = models.CharField(max_length=255, null=True)
+    statement_descriptor = models.CharField(max_length=12, null=True)
     status = models.CharField(editable=False, max_length=255)
 
     class Meta:
@@ -205,6 +208,7 @@ class Credit(BalancedResource):
                 uri=bank_account.credits_uri,
                 amount=self.amount,
                 description=self.description,
+                appears_on_statement_as=self.statement_descriptor,
             )
             try:
                 credit.save()
@@ -235,6 +239,7 @@ class Debit(BalancedResource):
                                  decimal_places=2,
                                  max_digits=10)
     description = models.CharField(editable=False, max_length=255)
+    statement_descriptor = models.CharField(max_length=12, null=True)
     card = models.ForeignKey(Card,
                              related_name='debits',
                              editable=False,
@@ -273,6 +278,7 @@ class Debit(BalancedResource):
             debit = account.debit(
                 amount=self.amount,
                 description=self.description,
+                appears_on_statement_as=self.statement_descriptor,
                 source_uri=source_uri,
             )
             try:
@@ -319,10 +325,11 @@ class Account(BalancedResource):
 
         super(Account, self).save(**kwargs)
 
-    def debit(self, amount, description, card=None, bank_account=None):
+    def debit(self, amount, description, card=None, bank_account=None, statement_descriptor=None):
         debit = Debit(
             amount=amount,
             description=description,
+            statement_descriptor=statement_descriptor,
             user=self.user,
         )
         if card:
@@ -332,10 +339,11 @@ class Account(BalancedResource):
         debit.save()
         return debit
 
-    def credit(self, amount, description, bank_account):
+    def credit(self, amount, description, bank_account, statement_descriptor=None):
         credit = Credit(
             amount=amount,
             description=description,
+            appears_on_statement_as=statement_descriptor,
             user=self.user,
             bank_account=bank_account,
             status='s' # scheduled
