@@ -79,10 +79,8 @@ class BankAccount(BalancedResource):
         # app_label = 'Balanced'
         db_table = 'balanced_bank_accounts'
 
-    def __unicode__(self):
-        return '%s %s %s' % (self.user,
-                             self.bank_name,
-                             self.account_number)
+    def __str__(self):
+        return '{} {} {}'.format(self.user, self.bank_name, self.account_number)
 
     def save(self, **kw):
         if not self.uri:
@@ -145,6 +143,9 @@ class Card(BalancedResource):
     class Meta:
         # app_label = 'Balanced'
         db_table = 'balanced_cards'
+
+    def __str__(self):
+        return '{} {} {}'.format(self.user, self.brand, self.last_four)
 
     @classmethod
     def create_from_card_uri(cls, user, card_uri):
