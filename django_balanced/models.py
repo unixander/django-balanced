@@ -344,7 +344,7 @@ class Account(BalancedResource):
         credit = Credit(
             amount=amount,
             description=description,
-            appears_on_statement_as=statement_descriptor,
+            statement_descriptor=statement_descriptor,
             user=self.user,
             bank_account=bank_account,
             status='s' # scheduled
