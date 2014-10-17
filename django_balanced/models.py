@@ -105,9 +105,9 @@ class BankAccount(BalancedResource):
         bank_account.delete()
         super(BankAccount, self).delete(using)
 
-    def credit(self, amount, description=None, statement_descriptor=None):
+    def credit(self, amount, description=None, meta=None, statement_descriptor=None):
         bank_account = self.find()
-        credit = bank_account.credit(amount, description, statement_descriptor)
+        credit = bank_account.credit(amount, description, meta, statement_descriptor)
 
         django_credit = Credit()
         django_credit._sync(credit)
