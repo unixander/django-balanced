@@ -114,6 +114,7 @@ class BankAccount(BalancedResource):
         django_credit.bank_account = self
         django_credit.user = self.user
         django_credit.amount /= 100.0
+        django_credit.statement_descriptor = statement_descriptor
         django_credit.save()
 
         return django_credit
