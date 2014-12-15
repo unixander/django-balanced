@@ -32,6 +32,7 @@ class CreditAddForm(forms.ModelForm):
 
     class Meta:
         model = Credit
+        exclude = ['status', 'created_at', 'id', 'uri']
 
     def clean(self):
         if not self.is_valid():
