@@ -222,6 +222,9 @@ class Credit(BalancedResource):
         self._sync(credit)
         self.amount = credit.amount / 100.0
         if not self.bank_account_id:
+            if type(credit.bank_account) is dict:
+                print("credit.bank_account is a dict!", credit.bank_account)
+                return
             bank_account = BankAccount.objects.get(pk=credit.bank_account.uri)
             self.bank_account = bank_account
 
