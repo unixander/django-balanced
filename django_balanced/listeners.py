@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 
+from django.conf import settings
 from django.dispatch import receiver
 from django.db.models import signals
 from django.contrib.auth import get_user_model
@@ -12,10 +13,12 @@ from django.contrib.auth import get_user_model
 
 # This will create an account per user when they are next saved. Subsequent
 # saves will not make a network call.
-@receiver(signals.post_save, sender=get_user_model())
 def create_user_profile(sender, instance, created, **kwargs):
     from .models import Account
     Account.objects.get_or_create(user=instance)
+
+if settings.AUTO_CREATE_BALANCED_ACCOUNT:
+    signals.post_save.connect(create_user_profile, sender=get_user_model())
 
 
 # We are disabling this because it makes migrations take too long.

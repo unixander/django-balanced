@@ -18,3 +18,5 @@ BALANCED.update(getattr(settings, 'BALANCED', {}))
 
 if BALANCED['API_KEY'] is None:
     LOGGER.error('You must set the BALANCED_API_KEY environment variable.')
+
+AUTO_CREATE_BALANCED_ACCOUNT = False
