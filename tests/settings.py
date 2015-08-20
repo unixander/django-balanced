@@ -43,3 +43,5 @@ INSTALLED_APPS = (
 BALANCED = {
     'API_KEY': balanced.APIKey().save().secret
 }
+
+AUTO_CREATE_BALANCED_ACCOUNT = True
