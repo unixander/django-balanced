@@ -17,7 +17,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     from .models import Account
     Account.objects.get_or_create(user=instance)
 
-if settings.AUTO_CREATE_BALANCED_ACCOUNT:
+if getattr(settings, 'AUTO_CREATE_BALANCED_ACCOUNT', False):
     signals.post_save.connect(create_user_profile, sender=get_user_model())
 
 
